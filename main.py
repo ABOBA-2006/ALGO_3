@@ -166,5 +166,23 @@ def delete_record(rec_index):
     file_edit.close()
 
 
+def find_record(rec_index):
+    index = hash_func(rec_index)
+    index_file_find = open(INDEX_FILE + str(index) + ".txt", "r")
+    index_file_find.seek(0, 2)
+    f_index_length = index_file_find.tell() // INDEX_LINE_LENGTH
+
+    finding_index = binary_search(index_file_find, 0, f_index_length, rec_index)
+    index_file_find.seek(finding_index * INDEX_LINE_LENGTH)
+    finding_line = index_file_find.readline()
+    finding_line_data_index = int(finding_line.split(';')[1].strip('_')) - 1
+    index_file_find.close()
+
+    file_read = open(DATA_FILE, "r")
+    file_read.seek(finding_line_data_index * LINE_LENGTH)
+    print(file_read.readline())
+    file_read.close()
+
+
 rec1 = Record(is_deleted=0, index=4)
-delete_record(6)
+find_record(100)
