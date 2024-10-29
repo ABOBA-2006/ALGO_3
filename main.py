@@ -116,13 +116,13 @@ def add_record(record):
     f_index.close()
 
 
-def edit_record(record, data):
-    index = hash_func(record.index)
+def edit_record(rec_index, data):
+    index = hash_func(rec_index)
     file_search = open(INDEX_FILE + str(index) + ".txt", "r")
     file_search.seek(0, 2)
     f_index_length = file_search.tell() // INDEX_LINE_LENGTH
 
-    editing_index = binary_search(file_search, 0, f_index_length, record.index)
+    editing_index = binary_search(file_search, 0, f_index_length, rec_index)
 
     file_search.seek(editing_index * INDEX_LINE_LENGTH)
     editing_line = file_search.readline()
@@ -137,5 +137,34 @@ def edit_record(record, data):
     file_edit.writelines(lines_edit)
     file_edit.close()
 
+
+def delete_record(rec_index):
+    index = hash_func(rec_index)
+    index_file_delete = open(INDEX_FILE + str(index) + ".txt", "r+")
+    index_file_delete.seek(0, 2)
+    f_index_length = index_file_delete.tell() // INDEX_LINE_LENGTH
+
+    deleting_index = binary_search(index_file_delete, 0, f_index_length, rec_index)
+    index_file_delete.seek(deleting_index * INDEX_LINE_LENGTH)
+    deleting_line = index_file_delete.readline()
+    deleting_line_data_index = int(deleting_line.split(';')[1].strip('_')) - 1
+
+    remaining_lines = index_file_delete.read()
+    index_file_delete.seek(deleting_index * INDEX_LINE_LENGTH)
+    index_file_delete.write(remaining_lines)
+    index_file_delete.truncate()
+    index_file_delete.close()
+
+    file_edit = open(DATA_FILE, "r+")
+    file_edit.seek(deleting_line_data_index * LINE_LENGTH)
+    lines_edit = file_edit.readlines()
+    line_to_edit = lines_edit[0].split(';')
+    line_to_edit[0] = '1'
+    lines_edit[0] = ';'.join(line_to_edit)
+    file_edit.seek(deleting_line_data_index * LINE_LENGTH)
+    file_edit.writelines(lines_edit)
+    file_edit.close()
+
+
 rec1 = Record(is_deleted=0, index=4)
-edit_record(rec1, 'POPA')
+delete_record(6)
