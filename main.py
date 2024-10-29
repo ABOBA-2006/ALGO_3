@@ -182,7 +182,3 @@ def find_record(rec_index):
     file_read.seek(finding_line_data_index * LINE_LENGTH)
     print(file_read.readline())
     file_read.close()
-
-
-rec1 = Record(is_deleted=0, index=4)
-find_record(100)
