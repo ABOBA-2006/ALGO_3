@@ -1,7 +1,8 @@
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsBlurEffect, QLineEdit
-from main import add_record, edit_record, delete_record, find_record
+import main
+
 
 class SimpleApp(QMainWindow):
     def __init__(self):
@@ -142,6 +143,26 @@ class SimpleApp(QMainWindow):
         self.button_find.clicked.connect(self.find_pressed)
 
 
+    def send_pressed(self, task):
+        index = self.text_field.text()
+        if index == "":
+            index = 0
+        else:
+            index = int(index)
+        if task == 1:
+            data = self.text_field2.text()
+            rec1 = main.Record(0, index, data)
+            main.add_record(rec1)
+        if task == 2:
+            main.delete_record(index)
+        if task == 3:
+            data = self.text_field2.text()
+            main.edit_record(index, data)
+        if task == 4:
+            print(main.find_record(index))
+
+
+
     def add_pressed(self):
         self.button_add.hide()
         self.button_edit.hide()
@@ -153,6 +174,7 @@ class SimpleApp(QMainWindow):
         self.send_button.show()
         self.send_button.setGeometry(450, 500, 200, 100)
         self.back_button.setGeometry(150, 500, 200, 100)
+        self.send_button.clicked.connect(lambda: self.send_pressed(1))
 
     def edit_pressed(self):
         self.button_add.hide()
@@ -165,6 +187,7 @@ class SimpleApp(QMainWindow):
         self.send_button.show()
         self.send_button.setGeometry(450, 500, 200, 100)
         self.back_button.setGeometry(150, 500, 200, 100)
+        self.send_button.clicked.connect(lambda: self.send_pressed(3))
 
     def delete_pressed(self):
         self.button_add.hide()
@@ -176,6 +199,7 @@ class SimpleApp(QMainWindow):
         self.send_button.show()
         self.send_button.setGeometry(300, 200, 200, 100)
         self.back_button.setGeometry(300, 500, 200, 100)
+        self.send_button.clicked.connect(lambda: self.send_pressed(2))
 
     def find_pressed(self):
         self.button_add.hide()
@@ -187,6 +211,7 @@ class SimpleApp(QMainWindow):
         self.send_button.show()
         self.send_button.setGeometry(300, 200, 200, 100)
         self.back_button.setGeometry(300, 500, 200, 100)
+        self.send_button.clicked.connect(lambda: self.send_pressed(4))
 
     def back_pressed(self):
         self.button_add.show()
@@ -197,6 +222,9 @@ class SimpleApp(QMainWindow):
         self.text_field.hide()
         self.back_button.hide()
         self.send_button.hide()
+        self.text_field.setText("")
+        self.text_field2.setText("")
+        self.send_button.clicked.disconnect()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

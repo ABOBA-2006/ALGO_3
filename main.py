@@ -2,7 +2,7 @@ import random
 import string
 
 AMOUNT_OF_BLOCKS = 10
-LENGTH_OF_BLOCK = 1000
+# LENGTH_OF_BLOCK = 1000
 INDEX_LENGTH = 5
 STR_LENGTH = 20
 LINE_LENGTH = 30
@@ -13,7 +13,7 @@ INDEX_FILE = "index_file"
 
 # ASSIST FUNCTIONS
 def hash_func(index):
-    return index // LENGTH_OF_BLOCK
+    return index % AMOUNT_OF_BLOCKS
 
 
 def generate_random_string(length=STR_LENGTH):
@@ -63,10 +63,10 @@ def create_files():
 
 # MAIN FUNCTIONS
 class Record:
-    def __init__(self, is_deleted:int, index:int):
+    def __init__(self, is_deleted:int, index:int, data:str):
         self.is_deleted = is_deleted
         self.index = index
-        self.data = generate_random_string()
+        self.data = data_modify(data)
 
 
 def binary_search_to_insert(left, right, file, index):
@@ -180,5 +180,7 @@ def find_record(rec_index):
 
     file_read = open(DATA_FILE, "r")
     file_read.seek(finding_line_data_index * LINE_LENGTH)
-    print(file_read.readline())
+    result = file_read.readline()
     file_read.close()
+
+    return result
